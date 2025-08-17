@@ -1,6 +1,21 @@
+// FILLBUFFER for most simple embedded systems (inc NDS)
+//#define FILLBUFFER (1024L * 256)  //256KiB
+
+// FILLBUFFER for most desktop computers
+//#define FILLBUFFER (1024L * 1024 * 256) //256MiB
+
+
+
+#ifndef FILLBUFFER
+#warning "FILLBUFFER must be specicifically defined when compiling for a platform on the basis of how much RAM can be afforded for the operation.\n Default FILLBUFFER is 256MiB."
+#define FILLBUFFER (1024L * 1024 * 256)  //256MiB
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <auxmem.h>
 
 char * file_g;
 FILE * swap_g;
@@ -27,16 +42,19 @@ void AM_init(const char * file, size_t size) {
 		0x00
 	);
 
-	for(size_t i = 0; i < size; i++) {
-		fputc(0x00, swap_g);
+	size_t div = size / FILLBUFFER;
+	size_t rem = size % FILLBUFFER;
+	char * zero_buff = calloc(1, FILLBUFFER);
+
+	for(size_t i = 0; i < div; i++) {
+		fwrite(zero_buff, 1 , FILLBUFFER, swap_g);
 	}
+	fwrite(zero_buff, 1, rem, swap_g);
+
+	free(zero_buff);
 }
 
 void AM_quit() {
 	free(file_g);
 	fclose(swap_g);
 }
-
-#if 1
-extern char * file_g;
-#endif
