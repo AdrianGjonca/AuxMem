@@ -15,11 +15,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include <auxmem.h>
 
 char * file_g;
 FILE * swap_g;
+size_t size_g;
+AM_error_t AM_error_g = AM_SUCCESS;
 
 void AM_init(const char * file, size_t size) {
 	size_t file_name_len;
@@ -53,15 +56,30 @@ void AM_init(const char * file, size_t size) {
 	fwrite(zero_buff, 1, rem, swap_g);
 
 	free(zero_buff);
+
+	size_g = size;
 }
 
 void AM_setbyte(AM_addr_t address, uint8_t byte_value) {
+	if(address >= size_g) {
+		AM_error_g = AM_FAILURE;
+		return;
+	}else {
+		AM_error_g = AM_SUCCESS;
+	}
 	//TODO investigate if a SEEK_CUR system would be faster
 	fseek(swap_g, address, SEEK_SET);
 	fputc(byte_value, swap_g);
 }
 
 uint8_t AM_getbyte(AM_addr_t address) {
+	if(address >= size_g) {
+		AM_error_g = AM_FAILURE;
+		return 0x00;
+	}else {
+		AM_error_g = AM_SUCCESS;
+	}
+
 	fseek(swap_g, address, SEEK_SET);
 	return fgetc(swap_g);
 }
