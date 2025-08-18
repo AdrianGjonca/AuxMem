@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #include <auxmem.h>
 
@@ -52,6 +53,17 @@ void AM_init(const char * file, size_t size) {
 	fwrite(zero_buff, 1, rem, swap_g);
 
 	free(zero_buff);
+}
+
+void AM_setbyte(AM_addr_t address, uint8_t byte_value) {
+	//TODO investigate if a SEEK_CUR system would be faster
+	fseek(swap_g, address, SEEK_SET);
+	fputc(byte_value, swap_g);
+}
+
+uint8_t AM_getbyte(AM_addr_t address) {
+	fseek(swap_g, address, SEEK_SET);
+	return fgetc(swap_g);
 }
 
 void AM_quit() {
