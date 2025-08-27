@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <auxmem.h>
+#include <stdlib.h>
 
 /*
  * setbytes and getbytes test, within bounds, using string
- * STACK VERSION
+ * HEAP VERSION
  */
 
 const char test_str[] = "Hello World";
@@ -17,18 +18,18 @@ int main() {
 		strlen(test_str) + 1
 	);
 	
-	char retrieved_val[256];
-
-	AM_getbytes(
+	char * retrieved_val;
+	retrieved_val = (char *) AM_getbytes_heap(
 		0,
-		(uint8_t *) retrieved_val,
-		sizeof(retrieved_val)
+		strlen(test_str) + 1
 	);
+
 
 	if(strcmp(test_str, retrieved_val)) 
 		printf("FAILURE\n");
 	else
 		printf("SUCCESS\n");
-
+	
+	free(retrieved_val);
 	AM_quit();
 }
