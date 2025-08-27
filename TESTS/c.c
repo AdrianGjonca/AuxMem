@@ -8,7 +8,7 @@
  */
 
 int main() {
-	AM_init("/home/adrian/TESTFILES/test_B.bin", 1024L);
+	AM_init("/home/adrian/TESTFILES/test_C.bin", 256L);
 	
 	AM_error_t a = AM_error_g;
 	uint8_t data = AM_getbyte(1024);

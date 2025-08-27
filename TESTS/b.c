@@ -7,7 +7,7 @@
  */
 
 int main() {
-	AM_init("/home/adrian/TESTFILES/test_B.bin", 1024L);
+	AM_init("/home/adrian/TESTFILES/test_B.bin", 256L);
 	
 	AM_error_t a = AM_error_g;
 	AM_setbyte(1024, 0xFA);
