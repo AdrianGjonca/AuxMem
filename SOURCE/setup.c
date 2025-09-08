@@ -40,6 +40,8 @@ void AM_init(const char * file, size_t size) {
 	free(zero_buff);
 
 	size_g = size;
+
+	//AM_set_strcap(size_g);
 }
 
 void AM_quit() {
